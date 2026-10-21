@@ -13,13 +13,13 @@ export default async function handler(
     const { rows } = await db.query("select now() as now");
     res.status(200).json({
       time: rows[0],
-      message: `Lewis Database connection successful. Running in ${environment}. DATABASE_URL: ${dbUrl}`,
+      message: `Dylan Lewis Database connection successful. Running in ${environment}. DATABASE_URL: ${dbUrl}`,
     });
   } catch (err) {
     res.status(500).json({
       error: "Database connection failed",
       details: (err as Error).message,
-      message: `Lewis Database connection failed. Running in ${environment}. DATABASE_URL: ${dbUrl}`,
+      message: `Dylan Lewis Database connection failed. Running in ${environment}. DATABASE_URL: ${dbUrl}`,
     });
   }
 }
