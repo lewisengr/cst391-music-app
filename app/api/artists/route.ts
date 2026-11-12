@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { connection, NextResponse } from "next/server";
 import { getPool } from "@/lib/db";
 import { Album } from "@/lib/types";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
+  await connection();
   try {
     const pool = getPool();
     const res = await pool.query(
