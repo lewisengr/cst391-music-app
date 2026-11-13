@@ -1,4 +1,3 @@
-// app\api\albums\[slug]\route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getPool } from "@/lib/db";
 import { Album, Track } from "@/lib/types";
