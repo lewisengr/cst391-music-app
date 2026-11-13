@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <main className="container py-4">
       <h1 className="mb-1">Music Albums</h1>
-      <p className="text-body-secondary mb-4">Dylan Lewis · CST-391</p>
+      <p className="text-body-secondary mb-4">Dylan Lewis - CST-391</p>
       {state.status === "loading" && <p role="status">Loading albums…</p>}
       {state.status === "error" && (
         <div className="alert alert-danger" role="alert">
