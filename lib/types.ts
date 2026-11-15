@@ -16,3 +16,25 @@ export interface Album {
   description?: string | null;
   tracks?: Track[];
 }
+
+export interface PlaylistTrack {
+  trackId: number;
+  position: number;
+  title: string;
+  number: number;
+  albumId: number;
+  albumTitle: string;
+  artist: string;
+  addedAt: string;
+}
+
+export interface Playlist {
+  id: number;
+  userId: number | null;
+  name: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+  trackCount?: number;
+  tracks?: PlaylistTrack[];
+}
