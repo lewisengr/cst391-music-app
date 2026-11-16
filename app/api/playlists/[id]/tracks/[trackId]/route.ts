@@ -5,11 +5,11 @@ import { removeTrackFromPlaylist } from "@/lib/playlists";
 type Context = { params: Promise<{ id: string; trackId: string }> };
 
 // DELETE /api/playlists/:id/tracks/:trackId
-// Planned access: owner only. Not enforced until the auth milestone.
 export async function DELETE(_request: NextRequest, context: Context) {
   const params = await context.params;
   const playlistId = parseId(params.id);
   const trackId = parseId(params.trackId);
+
   if (playlistId === null || trackId === null) {
     return jsonError(400, "Invalid playlist id or track id");
   }

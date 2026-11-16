@@ -10,7 +10,6 @@ import {
 type Context = { params: Promise<{ id: string }> };
 
 // GET /api/playlists/:id
-// Planned access: owner or admin. Not enforced until the auth milestone.
 export async function GET(_request: NextRequest, context: Context) {
   const id = parseId((await context.params).id);
   if (id === null) {
@@ -19,6 +18,7 @@ export async function GET(_request: NextRequest, context: Context) {
 
   try {
     const playlist = await getPlaylist(id);
+
     if (!playlist) {
       return jsonError(404, "Playlist not found");
     }
@@ -30,23 +30,28 @@ export async function GET(_request: NextRequest, context: Context) {
 }
 
 // PUT /api/playlists/:id  { name, description? }
-// Planned access: owner only; admins cannot edit. Not enforced until the auth milestone.
 export async function PUT(request: NextRequest, context: Context) {
   const id = parseId((await context.params).id);
+
   if (id === null) {
     return jsonError(400, "Invalid playlist id");
   }
+
   const body = await readJsonBody(request);
+
   if (body === undefined) {
     return jsonError(400, "Invalid JSON body");
   }
+
   const input = validatePlaylistInput(body, { allowUserId: false });
+
   if ("error" in input) {
     return jsonError(400, input.error);
   }
 
   try {
     const playlist = await updatePlaylist(id, input.value);
+
     if (!playlist) {
       return jsonError(404, "Playlist not found");
     }
@@ -58,9 +63,9 @@ export async function PUT(request: NextRequest, context: Context) {
 }
 
 // DELETE /api/playlists/:id
-// Planned access: owner or admin. Not enforced until the auth milestone.
 export async function DELETE(_request: NextRequest, context: Context) {
   const id = parseId((await context.params).id);
+
   if (id === null) {
     return jsonError(400, "Invalid playlist id");
   }

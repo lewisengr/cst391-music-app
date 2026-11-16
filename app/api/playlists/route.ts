@@ -7,13 +7,14 @@ import {
 } from "@/lib/playlists";
 
 // GET /api/playlists?userId=
-// Planned access: customer sees only their own playlists, admin sees all.
-// Not enforced until the auth milestone; userId filters to one owner for now.
+// Planned access: customer sees only their own playlists, admin sees all
 export async function GET(request: NextRequest) {
   const userIdParam = request.nextUrl.searchParams.get("userId");
   let userId: number | null = null;
+
   if (userIdParam !== null) {
     userId = parseId(userIdParam);
+
     if (userId === null) {
       return jsonError(400, "userId must be a positive integer");
     }
@@ -29,19 +30,22 @@ export async function GET(request: NextRequest) {
 
 // POST /api/playlists  { name, description?, userId? }
 // Planned access: customer only; the signed-in user becomes the owner.
-// Not enforced until the auth milestone; userId in the body stands in for now.
 export async function POST(request: NextRequest) {
   const body = await readJsonBody(request);
+
   if (body === undefined) {
     return jsonError(400, "Invalid JSON body");
   }
+
   const input = validatePlaylistInput(body, { allowUserId: true });
+
   if ("error" in input) {
     return jsonError(400, input.error);
   }
 
   try {
     const playlist = await createPlaylist(input.value);
+
     return NextResponse.json(playlist, {
       status: 201,
       headers: { Location: `/api/playlists/${playlist.id}` },
