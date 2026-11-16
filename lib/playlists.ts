@@ -52,7 +52,11 @@ export function validatePlaylistInput(
   }
 
   return {
-    value: { name: name.trim(), description: cleanDescription, userId: ownerId },
+    value: {
+      name: name.trim(),
+      description: cleanDescription,
+      userId: ownerId,
+    },
   };
 }
 
@@ -105,7 +109,9 @@ function toPlaylistTrack(row: PlaylistTrackRow): PlaylistTrack {
 const PLAYLIST_COLUMNS =
   "id, user_id, name, description, created_at, updated_at";
 
-export async function listPlaylists(userId: number | null): Promise<Playlist[]> {
+export async function listPlaylists(
+  userId: number | null,
+): Promise<Playlist[]> {
   const res = await getPool().query<PlaylistRow>(
     `SELECT p.id, p.user_id, p.name, p.description, p.created_at, p.updated_at,
             COUNT(pt.id)::int AS track_count
@@ -194,7 +200,7 @@ export async function addTrackToPlaylist(
 ): Promise<AddTrackResult> {
   const client = await getPool().connect();
   try {
-    await client.query("BEGIN");
+    await client.query("BEGIN"); // start transaction
 
     const playlist = await client.query(
       "SELECT id FROM playlists WHERE id = $1 FOR UPDATE",
@@ -213,6 +219,7 @@ export async function addTrackToPlaylist(
       return { status: "track-not-found" };
     }
 
+    // Insert the new row with the next position
     const inserted = await client.query(
       `INSERT INTO playlist_tracks (playlist_id, track_id, position)
        SELECT $1, $2, COALESCE(MAX(position), 0) + 1
@@ -252,7 +259,10 @@ export async function addTrackToPlaylist(
   }
 }
 
-export type RemoveTrackResult = "removed" | "playlist-not-found" | "entry-not-found";
+export type RemoveTrackResult =
+  | "removed"
+  | "playlist-not-found"
+  | "entry-not-found";
 
 export async function removeTrackFromPlaylist(
   playlistId: number,
